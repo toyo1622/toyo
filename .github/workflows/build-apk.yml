@@ -33,6 +33,16 @@ jobs:
       - name: Unzip EastWeather project
         run: unzip -o EastWeather-v0.5-source-fixed.zip
 
+      - name: Enable AndroidX
+        run: |
+          printf 'android.useAndroidX=true\nandroid.enableJetifier=true\n' > EastWeather/gradle.properties
+
+      - name: Add Firebase config
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          printf '%s' "$GOOGLE_SERVICES_JSON" > EastWeather/app/google-services.json
+
       - name: Fix first version startup
         run: |
           python3 - <<'PY'
@@ -56,5 +66,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: EastWeather-APK
+          name: EastWeather-v0.5-APK
           path: EastWeather/app/build/outputs/apk/debug/app-debug.apk
