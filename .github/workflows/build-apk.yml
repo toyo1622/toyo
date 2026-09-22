@@ -19,11 +19,11 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Install Android SDK 35
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+        run: |
+          SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          yes | "$SDKMANAGER" --licenses > /dev/null || true
+          "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -32,6 +32,22 @@ jobs:
 
       - name: Unzip EastWeather project
         run: unzip -o EastWeather-v0.1-source.zip
+
+      - name: Fix first version startup
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path("EastWeather/app/src/main/java/com/eastweather/app/MainActivity.kt")
+          s = p.read_text()
+
+          old = 'private fun card(s:String):TextView { val v=text(s,18,Color.BLACK); v.setPadding(28,28,28,28); v.setBackgroundColor(Color.rgb(245,247,250)); root.addView(v, LinearLayout.LayoutParams(-1,-2).apply{topMargin=18}); return v }'
+
+          new = 'private fun card(s:String):TextView { val v=TextView(this); v.text=s; v.textSize=18f; v.setTextColor(Color.BLACK); v.setPadding(28,28,28,28); v.setBackgroundColor(Color.rgb(245,247,250)); root.addView(v, LinearLayout.LayoutParams(-1,-2).apply{topMargin=18}); return v }'
+
+          if old in s:
+              p.write_text(s.replace(old, new))
+          PY
 
       - name: Build APK
         working-directory: EastWeather
