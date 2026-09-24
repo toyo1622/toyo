@@ -24,7 +24,25 @@ jobs:
 
       - name: Find project folder
         run: |
-          echo "PROJECT_DIR=$(dirname $(find source -name gradlew | head -n 1))" >> $GITHUB_ENV
+          find source -maxdepth 4 -type f | head -n 120
+
+          GRADLEW_PATH=$(find source -type f -name gradlew | head -n 1)
+
+          if [ -n "$GRADLEW_PATH" ]; then
+            PROJECT_DIR=$(dirname "$GRADLEW_PATH")
+            echo "USE_WRAPPER=true" >> $GITHUB_ENV
+          else
+            SETTINGS_PATH=$(find source -type f \( -name settings.gradle -o -name settings.gradle.kts \) | head -n 1)
+            if [ -z "$SETTINGS_PATH" ]; then
+              echo "Cannot find gradlew or settings.gradle"
+              exit 1
+            fi
+            PROJECT_DIR=$(dirname "$SETTINGS_PATH")
+            echo "USE_WRAPPER=false" >> $GITHUB_ENV
+          fi
+
+          echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
+          echo "Project folder: $PROJECT_DIR"
 
       - name: Add Firebase configuration
         env:
@@ -36,8 +54,12 @@ jobs:
       - name: Build release APK
         run: |
           cd "$PROJECT_DIR"
-          chmod +x gradlew
-          ./gradlew assembleRelease
+          if [ "$USE_WRAPPER" = "true" ]; then
+            chmod +x gradlew
+            ./gradlew assembleRelease
+          else
+            gradle assembleRelease
+          fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
