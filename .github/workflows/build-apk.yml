@@ -20,7 +20,7 @@ jobs:
           gradle-version: '8.9'
 
       - name: Unpack source
-        run: unzip -o HiRider-v6-work-in-progress-source.zip -d source
+        run: unzip -o HiRider-v6-work-in-progress-source-2.zip -d source
 
       - name: Find project folder
         run: |
