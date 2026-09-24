@@ -20,20 +20,27 @@ jobs:
           gradle-version: '8.9'
 
       - name: Unpack source
-        run: unzip -o HiRider-v6-work-in-progress-source.zip
+        run: unzip -o HiRider-v6-work-in-progress-source.zip -d source
+
+      - name: Find project folder
+        run: |
+          echo "PROJECT_DIR=$(dirname $(find source -name gradlew | head -n 1))" >> $GITHUB_ENV
 
       - name: Add Firebase configuration
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: |
-          mkdir -p app
-          printf '%s' "$GOOGLE_SERVICES_JSON" > app/google-services.json
+          mkdir -p "$PROJECT_DIR/app"
+          printf '%s' "$GOOGLE_SERVICES_JSON" > "$PROJECT_DIR/app/google-services.json"
 
       - name: Build release APK
-        run: ./gradlew assembleRelease
+        run: |
+          cd "$PROJECT_DIR"
+          chmod +x gradlew
+          ./gradlew assembleRelease
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: app/build/outputs/apk/release/app-release.apk
+          path: source/**/app/build/outputs/apk/release/*.apk
