@@ -51,18 +51,18 @@ jobs:
           mkdir -p "$PROJECT_DIR/app"
           printf '%s' "$GOOGLE_SERVICES_JSON" > "$PROJECT_DIR/app/google-services.json"
 
-      - name: Build release APK
+      - name: Build debug APK
         run: |
           cd "$PROJECT_DIR"
           if [ "$USE_WRAPPER" = "true" ]; then
             chmod +x gradlew
-            ./gradlew assembleRelease
+            ./gradlew assembleDebug
           else
-            gradle assembleRelease
+            gradle assembleDebug
           fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
-          path: source/**/app/build/outputs/apk/release/*.apk
+          name: app-debug
+          path: source/**/app/build/outputs/apk/debug/*.apk
