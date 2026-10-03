@@ -1,0 +1,58 @@
+name: Build Hi Rider iOS v0.1
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'HiRider-iOS-v0.1-source.zip'
+      - '.github/workflows/build-ios.yml'
+
+jobs:
+  build-ios:
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Install XcodeGen
+        run: |
+          brew update
+          brew install xcodegen
+
+      - name: Extract iOS source
+        run: |
+          rm -rf ios-build
+          mkdir -p ios-build
+          unzip -o HiRider-iOS-v0.1-source.zip -d ios-build
+          find ios-build -maxdepth 3 -type f -print
+
+      - name: Generate Xcode project
+        working-directory: ios-build
+        run: xcodegen generate
+
+      - name: Build for iOS Simulator
+        working-directory: ios-build
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project HiRiderIOS.xcodeproj \
+            -scheme HiRiderIOS \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            build | tee build.log
+
+      - name: Upload build result
+        uses: actions/upload-artifact@v4
+        with:
+          name: HiRider-iOS-v0.1-simulator
+          path: |
+            ios-build/build/DerivedData/Build/Products/Debug-iphonesimulator/Hi Rider.app
+            ios-build/build.log
+          if-no-files-found: warn
