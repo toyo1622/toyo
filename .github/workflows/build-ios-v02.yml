@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'HiRider-iOS-v0.2-source.zip'
+      - 'GoogleService-Info.plist'
       - '.github/workflows/build-ios-v02.yml'
 
 jobs:
@@ -29,6 +30,10 @@ jobs:
           mkdir -p ios-build-v02
           unzip -o HiRider-iOS-v0.2-source.zip -d ios-build-v02
           find ios-build-v02 -maxdepth 3 -type f -print
+
+      - name: Add Firebase config
+        run: |
+          cp GoogleService-Info.plist ios-build-v02/HiRiderIOS/GoogleService-Info.plist
 
       - name: Generate Xcode project
         working-directory: ios-build-v02
