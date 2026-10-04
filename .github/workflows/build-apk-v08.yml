@@ -31,6 +31,7 @@ jobs:
         run: |
           test -f EastWeather/app/src/main/java/com/eastweather/app/MainActivity.kt
           test -f EastWeather/app/src/main/java/com/eastweather/app/WeatherAlertWorker.kt
+          test -f EastWeather/app/google-services.json
           grep -F "versionCode 8" EastWeather/app/build.gradle
           grep -F "versionName '0.8'" EastWeather/app/build.gradle
           grep -F 'if (auth.currentUser != null)' EastWeather/app/src/main/java/com/eastweather/app/MainActivity.kt
@@ -41,14 +42,7 @@ jobs:
           grep -F 'Yong Peng' EastWeather/app/src/main/java/com/eastweather/app/MainActivity.kt
           grep -F 'android.permission.POST_NOTIFICATIONS' EastWeather/app/src/main/AndroidManifest.xml
           grep -F 'android:allowBackup="false"' EastWeather/app/src/main/AndroidManifest.xml
-          echo 'HiRider v0.8 source confirmed.'
-
-      - name: Add Firebase configuration
-        env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: |
-          test -n "$GOOGLE_SERVICES_JSON"
-          printf '%s' "$GOOGLE_SERVICES_JSON" > EastWeather/app/google-services.json
+          echo 'HiRider v0.8 source and Firebase configuration confirmed.'
 
       - name: Restore permanent signing key
         env:
