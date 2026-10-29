@@ -23,9 +23,9 @@ jobs:
 
       - name: Unpack v0.9 source
         run: |
-          test -f HiRider-v9-radar-source.zip
+          test -f HiRider-v9-repaired-source.zip
           rm -rf EastWeather
-          unzip -o HiRider-v9-radar-source.zip
+          unzip -o HiRider-v9-repaired-source.zip
 
       - name: Verify HiRider v0.9 source
         run: |
