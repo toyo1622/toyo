@@ -1,7 +1,7 @@
 {
-  "versionCode": 9,
-  "versionName": "0.9",
+  "versionCode": 10,
+  "versionName": "0.10",
   "apkUrl": "https://github.com/toyo1622/toyo/releases/latest/download/app-release.apk",
-  "notesEn": "English rain radar and weather improvements.",
-  "notesZh": "英文雷达及天气功能改进。"
+  "notesEn": "Automatic update checking and English rain radar improvements.",
+  "notesZh": "新增版本更新检查，保留英文雷达及新马天气预报。"
 }
