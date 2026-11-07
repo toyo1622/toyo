@@ -1,7 +1,8 @@
+
 {
-  "versionCode": 10,
-  "versionName": "0.10",
+  "versionCode": 11,
+  "versionName": "0.10.1",
   "apkUrl": "https://github.com/toyo1622/toyo/releases/latest/download/app-release.apk",
-  "notesEn": "Automatic update checking and English rain radar improvements.",
-  "notesZh": "新增版本更新检查，保留英文雷达及新马天气预报。"
+  "notesEn": "Fixed Google sign-in. Retained phone OTP, Singapore and Malaysia weather forecasts, rain radar, weather alerts and update checking.",
+  "notesZh": "修复 Google 账号登录，保留手机 OTP 验证码登录、新加坡与马来西亚天气预报、降雨雷达、天气提醒及自动检查更新功能。"
 }
