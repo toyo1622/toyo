@@ -1,5 +1,5 @@
 
-name: Build Hi Rider V10 Update Checker
+name: Build Hi Rider v0.10.1 Google Login Fix
 
 on:
   workflow_dispatch:
@@ -48,6 +48,15 @@ jobs:
           grep -F 'Continue with Google' EastWeather/app/src/main/java/com/eastweather/app/MainActivity.kt
           echo 'Hi Rider V10 update source verified.'
 
+      - name: Set v0.10.1 version
+        run: |
+          sed -i 's/versionCode 10/versionCode 11/' EastWeather/app/build.gradle
+          sed -i "s/versionName '0.10'/versionName '0.10.1'/" EastWeather/app/build.gradle
+          sed -i 's/Hi Rider v0.10 (V10)/Hi Rider v0.10.1/' EastWeather/app/src/main/java/com/eastweather/app/MainActivity.kt
+          grep -F 'versionCode 11' EastWeather/app/build.gradle
+          grep -F "versionName '0.10.1'" EastWeather/app/build.gradle
+          grep -F 'Hi Rider v0.10.1' EastWeather/app/src/main/java/com/eastweather/app/MainActivity.kt
+
       - name: Verify bundled Firebase Google sign-in configuration
         run: |
           python3 - <<'PY'
@@ -90,5 +99,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: HiRider-v0.10-signed-APK
+          name: HiRider-v0.10.1-signed-APK
           path: EastWeather/app/build/outputs/apk/release/app-release.apk
